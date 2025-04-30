@@ -27,15 +27,24 @@ public class Usuario {
 		
 		licao_pratica_5();
 		
+		licao_pratica_6();
+		
+		EntityManager em = JPAUtil.getEntityManager();
+		ProdutoDao produtoDao = new ProdutoDao(em);
+		
+		List<Produto> produto = produtoDao.consultarPorParametros("Notebook", null, null, null);
+		
+	}
+
+	private static void licao_pratica_6() {
 		EntityManager em = JPAUtil.getEntityManager();
 		Pedido p = new Pedido();
 		PedidoDao pedidoDao = new PedidoDao(em);
 	
-		pedidoDao.consultarPorIdComCliente(1l);
+		//pedidoDao.consultarPorIdComCliente(1l);
 		
 		em.close();
-		System.out.println(p.getCliente().getNome());
-		
+		//System.out.println(p.getCliente().getNome());
 	}
 
 	private static void licao_pratica_5() {

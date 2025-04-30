@@ -1,9 +1,15 @@
 package br.com.mycompany.loja.dao;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import br.com.mycompany.loja.model.Produto;
 
@@ -42,5 +48,28 @@ public class ProdutoDao {
 	public List<Produto> consultarTudo(){
 		String jpql = "SELECT p FROM Produto p";
 		return em.createQuery(jpql, Produto.class).getResultList();	
+	}
+	
+	public List<Produto> consultarPorParametros(String nome, String descriçao, BigDecimal preço, LocalDate data){
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Produto> query = builder.createQuery(Produto.class);
+		Root<Produto> from = query.from(Produto.class);
+		
+		Predicate filter = builder.and();
+		if(nome != null && !nome.trim().isEmpty()) {
+			filter = builder.and(filter, builder.equal(from.get("nome"), nome));
+		}
+		if(descriçao != null && !descriçao.trim().isEmpty()) {
+			filter = builder.and(filter, builder.equal(from.get("descriçao"), descriçao));
+		}
+		if(preço != null) {
+			filter = builder.and(filter, builder.equal(from.get("preço"), preço));
+		}
+		if(data != null) {
+			filter = builder.and(filter, builder.equal(from.get("data"), data));
+		}
+		query.where(filter);
+		return em.createQuery(query).getResultList();
+		
 	}
 }
